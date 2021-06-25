@@ -2,11 +2,8 @@ package net.coderbot.iris.pipeline;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.coderbot.iris.Iris;
-import net.coderbot.iris.pipeline.newshader.CoreWorldRenderingPipeline;
 import net.coderbot.iris.block_rendering.BlockRenderingSettings;
 import net.coderbot.iris.shaderpack.DimensionId;
-import net.coderbot.iris.uniforms.SystemTimeUniforms;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.opengl.GL20C;
 
@@ -17,7 +14,7 @@ import java.util.function.Function;
 public class PipelineManager {
 	private static PipelineManager instance;
 	private final Function<DimensionId, WorldRenderingPipeline> pipelineFactory;
-	private final Map<DimensionId, WorldRenderingPipeline> pipelinesPerWorld = new HashMap<>();
+	private final Map<DimensionId, WorldRenderingPipeline> pipelinesPerDimension = new HashMap<>();
 	private boolean isInitialized = false;
 	private WorldRenderingPipeline pipeline;
 	private boolean sodiumShaderReloadNeeded;
@@ -27,8 +24,8 @@ public class PipelineManager {
 	}
 
 	public WorldRenderingPipeline preparePipeline(DimensionId currentDimension) {
-		WorldRenderingPipeline currentPipeline = pipelinesPerWorld.computeIfAbsent(currentDimension, pipelineFactory);
-		
+		WorldRenderingPipeline currentPipeline = pipelinesPerDimension.computeIfAbsent(currentDimension, pipelineFactory);
+
 		if (!isInitialized) {
 			if (BlockRenderingSettings.INSTANCE.isReloadRequired()) {
 				MinecraftClient.getInstance().worldRenderer.reload();
@@ -36,9 +33,9 @@ public class PipelineManager {
 			}
 			isInitialized = true;
 		}
-		
+
 		pipeline = currentPipeline;
-		
+
 		return currentPipeline;
 	}
 
@@ -71,16 +68,17 @@ public class PipelineManager {
 	}
 
 	public void destroyPipeline() {
-		for (WorldRenderingPipeline renderingPipeline : pipelinesPerWorld.values()) {
+		pipelinesPerDimension.forEach((dimensionId, pipeline) -> {
+			Iris.logger.info("Destroying pipeline {}", dimensionId);
 			resetTextureState();
-			renderingPipeline.destroy();
-		}
-		
-		pipelinesPerWorld.clear();
+			pipeline.destroy();
+		});
+
+		pipelinesPerDimension.clear();
 		pipeline = null;
 		isInitialized = false;
 	}
-	
+
 	private void resetTextureState() {
 		// Unbind all textures
 		//
@@ -93,7 +91,7 @@ public class PipelineManager {
 			GlStateManager.glActiveTexture(GL20C.GL_TEXTURE0 + i);
 			GlStateManager._bindTexture(0);
 		}
-		
+
 		// Set the active texture unit to unit 0
 		//
 		// This seems to be what most code expects. It's a sane default in any case.
