@@ -40,7 +40,8 @@
     "texunits.MixinVertexFormats",
     "statelisteners.CapabilityTrackerAccessor",
     "statelisteners.GlStateManagerAccessor",
-    "statelisteners.MixinGlStateManager"
+    "statelisteners.MixinGlStateManager",
+    "DimensionTypeAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
