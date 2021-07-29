@@ -24,15 +24,18 @@ import net.coderbot.iris.uniforms.builtin.BuiltinReplacementUniforms;
 
 public class SodiumTerrainPipeline {
 	String terrainVertex;
+	String terrainGeometry;
 	String terrainFragment;
 	String terrainCutoutFragment;
 	GlFramebuffer terrainFramebuffer;
 
 	String translucentVertex;
+	String translucentGeometry;
 	String translucentFragment;
 	GlFramebuffer translucentFramebuffer;
 
 	String shadowVertex;
+	String shadowGeometry;
 	String shadowFragment;
 	String shadowCutoutFragment;
 	GlFramebuffer shadowFramebuffer;
@@ -55,6 +58,7 @@ public class SodiumTerrainPipeline {
 
 		terrainSource.ifPresent(sources -> {
 			terrainVertex = sources.getVertexSource().orElse(null);
+			terrainGeometry = sources.getGeometrySource().orElse(null);
 			terrainFragment = sources.getFragmentSource().orElse(null);
 			terrainFramebuffer = targets.createGbufferFramebuffer(flippedBeforeTranslucent,
 					sources.getDirectives().getDrawBuffers());
@@ -62,6 +66,7 @@ public class SodiumTerrainPipeline {
 
 		translucentSource.ifPresent(sources -> {
 			translucentVertex = sources.getVertexSource().orElse(null);
+			translucentGeometry = sources.getGeometrySource().orElse(null);
 			translucentFragment = sources.getFragmentSource().orElse(null);
 			translucentFramebuffer = targets.createGbufferFramebuffer(flippedAfterTranslucent,
 					sources.getDirectives().getDrawBuffers());
@@ -69,6 +74,7 @@ public class SodiumTerrainPipeline {
 
 		shadowSource.ifPresent(sources -> {
 			shadowVertex = sources.getVertexSource().orElse(null);
+			shadowGeometry = sources.getGeometrySource().orElse(null);
 			shadowFragment = sources.getFragmentSource().orElse(null);
 		});
 
@@ -114,6 +120,10 @@ public class SodiumTerrainPipeline {
 		return Optional.ofNullable(terrainVertex);
 	}
 
+	public Optional<String> getTerrainGeometryShaderSource() {
+		return Optional.ofNullable(terrainGeometry);
+	}
+
 	public Optional<String> getTerrainFragmentShaderSource() {
 		return Optional.ofNullable(terrainFragment);
 	}
@@ -130,6 +140,10 @@ public class SodiumTerrainPipeline {
 		return Optional.ofNullable(translucentVertex);
 	}
 
+	public Optional<String> getTranslucentGeometryShaderSource() {
+		return Optional.ofNullable(translucentGeometry);
+	}
+
 	public Optional<String> getTranslucentFragmentShaderSource() {
 		return Optional.ofNullable(translucentFragment);
 	}
@@ -140,6 +154,10 @@ public class SodiumTerrainPipeline {
 
 	public Optional<String> getShadowVertexShaderSource() {
 		return Optional.ofNullable(shadowVertex);
+	}
+
+	public Optional<String> getShadowGeometryShaderSource() {
+		return Optional.ofNullable(shadowGeometry);
 	}
 
 	public Optional<String> getShadowFragmentShaderSource() {
