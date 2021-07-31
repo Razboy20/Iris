@@ -94,6 +94,18 @@ public class SodiumTerrainPipeline {
 			shadowVertex = TriforceSodiumPatcher.patch(shadowVertex, ShaderType.VERTEX, null, inputs);
 		}
 
+		if (terrainGeometry != null) {
+			terrainGeometry = TriforceSodiumPatcher.patch(terrainGeometry, ShaderType.GEOMETRY, null, inputs);
+		}
+
+		if (translucentGeometry != null) {
+			translucentGeometry = TriforceSodiumPatcher.patch(translucentGeometry, ShaderType.GEOMETRY, null, inputs);
+		}
+
+		if (shadowGeometry != null) {
+			shadowGeometry = TriforceSodiumPatcher.patch(shadowGeometry, ShaderType.GEOMETRY, null, inputs);
+		}
+
 		if (terrainFragment != null) {
 			String fragment = terrainFragment;
 
