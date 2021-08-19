@@ -45,6 +45,7 @@ public class ExtendedShader extends Shader implements SamplerHolder {
 	@Override
 	public void unbind() {
 		super.unbind();
+		ProgramUniforms.clearActiveUniforms();
 
 		MinecraftClient.getInstance().getFramebuffer().beginWrite(false);
 	}
