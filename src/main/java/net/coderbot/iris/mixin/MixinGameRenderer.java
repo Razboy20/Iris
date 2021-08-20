@@ -57,6 +57,10 @@ public class MixinGameRenderer {
 	private static void iris$overridePositionShader(CallbackInfoReturnable<Shader> cir) {
 		if (isPhase(WorldRenderingPhase.SKY)) {
 			override(CoreWorldRenderingPipeline::getSkyBasic, cir);
+		} else if (ShadowRenderer.ACTIVE) {
+			// TODO: shadowBasic
+		} else if (isRenderingWorld()) {
+			override(CoreWorldRenderingPipeline::getBasic, cir);
 		}
 	}
 
@@ -64,6 +68,10 @@ public class MixinGameRenderer {
 	private static void iris$overridePositionColorShader(CallbackInfoReturnable<Shader> cir) {
 		if (isPhase(WorldRenderingPhase.SKY)) {
 			override(CoreWorldRenderingPipeline::getSkyBasicColor, cir);
+		} else if (ShadowRenderer.ACTIVE) {
+			// TODO: shadowBasicColor
+		} else if (isRenderingWorld()) {
+			override(CoreWorldRenderingPipeline::getBasicColor, cir);
 		}
 	}
 
