@@ -1,6 +1,6 @@
 ![Iris: An open-source shaders mod compatible with OptiFine shaderpacks](docs/banner.png)
 
-# Iris
+# Iris - Github Workflow with Build
 
 ## Links
 
