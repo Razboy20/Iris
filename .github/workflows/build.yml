@@ -15,7 +15,15 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 16
-    - name: Fetch iris
+    - name: Fetch Iris for Sodium
+      uses: actions/checkout@v2
+      with:
+        repository: 'IrisShaders/Iris'
+        ref: '1.17'
+        path: 'iris'
+    - name: Iris publishToMavenLocal
+      run: cd ./iris && ./gradlew publishToMavenLocal && cd ..
+    - name: Fetch Sodium
       uses: actions/checkout@v2
       with:
         repository: 'razboy20/sodium-fabric'
