@@ -6,17 +6,12 @@ Iris 1.1.2 has been released for Minecraft 1.16.5 and Minecraft 1.17.1! You can 
 
 This update includes six weeks of bug fixes and other improvements, including some nice performance improvements! It's a fairly large update, and we recommend that everyone using previous versions of Iris update to this new version.
 
-## Changelog TODO
-
-- Collect all of the bugs fixed with the new entity rendering & rewritten Shadow Culling
-- Collect fixes from the Sodium fork, both 1.16 and 1.17
-- Collect 1.17-specific fixes
-
 ## Big Reworks
 
-- Shadow culling has been completely rewritten. It no longer incorrectly culls chunks compared to OptiFine, and overall performance has improved greatly compared to the previous system (especially with shader packs like Enhanced Default, BSL, Complementary Shaders, and SEUS Renewed).
+- Shadow culling has been completely rewritten. It no longer incorrectly culls chunks compared to OptiFine, and overall performance has improved greatly compared to the previous system (especially with shader packs like Enhanced Default, BSL, and Complementary Shaders).
     - An advanced system for shadow frustum culling with shader packs that do not use voxelization has been added that takes the player's view into account. If Iris can determine that something cannot cast a shadow anywhere in the player's view frustum, that object is not rendered.
     - This system detects when a shader pack like SEUS PTGI uses voxelization (through the presence of a geometry shader, Iris has no support for image load/store yet) and automatically disables this culling mode in that case to prevent bugs (such as light not being emitted from lights behind you).
+    - This system also detects the sun-bounce GI in SEUS Renewed / SEUS v11 and automatically disables itself if the pack is configured to have sun-bounce GI enabled. If you disable the sun bounce GI (currently by editing the pack and in the future through the config GUI), shadow frustum culling will activate again.
     - Previous implementations of shadow culling had a bug with some packs, such as Sildur's Vibrant Shaders, that would cause shadows to be cast much less far away than they would on OptiFine. This issue has been completely fixed.
     - In the unlikely case that you observe a performance decrease, you can restore the old behavior using the newly-added Max Shadow Distance slider in Video Settings, which is active on packs that do not themselves specify a shadow render distance.
 - Batched entity rendering has been completely rewritten, fixing a number of memory management, correctness, and performance issues.
@@ -27,7 +22,7 @@ This update includes six weeks of bug fixes and other improvements, including so
 
 - Fog now fully works in most shader packs, including Sildur's Enhanced Default and other vanilla-like shaders
     - fogMode and fogDensity are fully supported on 1.16.5
-    - fogMode is fully supported on 1.17, fogDensity is yet not supported on 1.7
+    - fogMode is fully supported on 1.17, fogDensity is yet not supported on 1.17
 - Entities now flash red when hurt, and flash white when they are going to explode
     - entityColor is now fully supported
     - The overlay texture is now stored in texture unit 2, not texture unit 6. Eventually we will want to restore vanilla behavior of storing it in texture unit 1.
@@ -66,6 +61,7 @@ This update includes six weeks of bug fixes and other improvements, including so
 
 ## Other Miscellaneous Fixes
 
+- Iris is much more selective about what messages it prints to the log now. Previous versions printed a huge amount of messages to the log, many of them not being very useful, and a bunch of these messages were actually wrong. This is pretty much fixed.
 - Translucent falling blocks no longer render through solid terrain with some packs
     - This was caused by gbuffers_terrain being used, instead of gbuffers_entities
 - A number of small tweaks and bug fixes from the Starline fork (credit Justsnoopy30) have been merged, including:
@@ -78,6 +74,23 @@ This update includes six weeks of bug fixes and other improvements, including so
     - Messages no longer contain "Optional[]"
     - A stack trace is no longer printed on NoSuchFileException errors
     - Shader pack loading errors no longer fatally crash the game on startup
+- Fixed an issue where Complementary's fancy nether portal effects in the v4.2 dev versions would break in some cases
+    - A dot product wasn't being computed properly in vertex writing code.
+- You can now enable Fabulous Graphics when shaders are fully disabled.
+- Fixed an issue where some blocks would be see-through with Continuum Shaders
+    - An unexpected sign extension in vertex writing caused part of mc_midTexCoord to get corrupted.
+    - This was highly dependent on resource packs and load order.
+
+## 1.17-specific fixes
+
+- End gateway beams no longer appear to render twice with shader packs that use shadows.
+- Fixed separate leads incorrectly rendering as connected
+- Block selection outlines now render properly, even with world curvature enabled.
+- Chunk borders (F3 + G), hitboxes, and other lines now render properly with shaders enabled.
+    - Chunk borders and hitboxes are properly colored and lit as well
+- Fixed a shader patch failure when an "off" alpha test was specified in shaders.properties
+- World borders render properly with most packs now.
+- The energy swirl around charged creepers now renders properly.
 
 ## Translations
 
