@@ -52,4 +52,4 @@ jobs:
       with:
         draft: true
         prerelease: true
-        files: build/libs
+        files: build/libs/*
