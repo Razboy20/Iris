@@ -7,12 +7,21 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-// To build iris bundled with sodium, just run the task `gradle bundleSodium`.
-ext.includeSodium = false
-tasks.register('bundleSodium') {
-	includeSodium = true
+// To build iris bundled with sodium, just run the task `gradle bundleWithSodium`. Currently requires iris to have been built normally first.
+tasks.register('bundleWithSodium')
+
+
+
+bundleWithSodium {
+	finalizedBy build
+	doFirst {
+		project.dependencies {
+			// include sodium jar if bundling with sodium
+			include "me.jellysquid.mods:sodium-fabric:0.3.2+IRIS2+"
+		}
+		archivesBaseName += "+sodium"
+	}
 }
-bundleSodium.finalizedBy(build)
 
 archivesBaseName = project.archives_base_name
 version = "${project.mod_version}+${getVersionMetadata()}"
@@ -31,9 +40,6 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// include sodium jar if bundling with sodium
-	if (includeSodium) include "me.jellysquid.mods:sodium-fabric:0.3.2+IRIS2+"
-
 	// Critical, needed for loading our custom language files
 	includeFabricApiModule "fabric-resource-loader-v0"
 
@@ -50,6 +56,7 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
+
 
 test {
 	// Use JUnit 5 Platform for tests
@@ -173,7 +180,7 @@ def getVersionMetadata() {
 
 	// CI builds only
 	if (build_id != null) {
-		return includeSodium ? "sodium-build.${build_id}" : "build.${build_id}"
+		return "build.${build_id}"
 	}
 
 	if (grgit != null) {
@@ -185,6 +192,6 @@ def getVersionMetadata() {
 			id += "-dirty"
 		}
 
-		return includeSodium ? "sodium-rev.${id}" : "rev.${id}"
+		return "rev.${id}"
 	}
 }
